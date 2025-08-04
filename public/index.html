@@ -186,8 +186,22 @@
         window.addEventListener('load', function() {
             // Hide loader with a fade effect when the scene is ready
             const scene = document.querySelector('a-scene');
+            const loader = document.querySelector('.arjs-loader');
+            
+            // Handle camera permission errors
+            scene.addEventListener('camera-error', function(event) {
+                console.error('Camera error:', event);
+                loader.innerHTML = `
+                    <div class="loader-content">
+                        <div style="color: #ff6b6b; font-weight: bold; margin-bottom: 15px;">Camera Access Required</div>
+                        <div style="margin-bottom: 20px;">Please allow camera access to use this AR experience.</div>
+                        <button onclick="location.reload()" style="background: linear-gradient(45deg, #4285f4, #34a853); border: none; color: white; padding: 10px 20px; border-radius: 25px; cursor: pointer;">Try Again</button>
+                    </div>
+                `;
+            });
+            
+            // Handle successful scene loading
             scene.addEventListener('loaded', function() {
-                const loader = document.querySelector('.arjs-loader');
                 loader.style.opacity = '1';
                 loader.style.transition = 'opacity 0.8s ease';
                 setTimeout(() => {
