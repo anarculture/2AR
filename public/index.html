@@ -172,13 +172,17 @@
             <div class="demo-buttons">
                 <button class="demo-button active" id="marker-demo">Hiro Marker</button>
                 <button class="demo-button" id="pattern-demo">Kanji Pattern</button>
+                <button class="demo-button" id="custom-demo">Custom Marker</button>
             </div>
         </div>
         <div class="instructions" id="marker-instructions">
-            📱 Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank">Hiro Marker</a> to see a 3D duck model
+            Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank">Hiro Marker</a> to see a 3D duck model
         </div>
         <div class="instructions hidden" id="pattern-instructions">
-            📱 Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/pattern-kanji.png" target="_blank">Kanji Pattern</a> to see animated 3D objects
+            Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/pattern-kanji.png" target="_blank">Kanji Pattern</a> to see animated 3D objects
+        </div>
+        <div class="instructions hidden" id="custom-instructions">
+            Point your camera at your custom 22AR marker to see a special 3D model
         </div>
     </div>
 
@@ -212,6 +216,23 @@
         <a-entity camera></a-entity>
     </a-scene>
 
+    <!-- AR Scene for Custom Pattern Demo -->
+    <a-scene id="custom-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; motionUI: false;" class="hidden">
+        <!-- Custom Pattern Marker with 3D Object -->
+        <a-marker type="pattern" url="patterns/pattern-22AR.patt">
+            <a-entity
+                position="0 0.5 0"
+                scale="0.5 0.5 0.5"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear;"
+                gltf-model="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf">
+            </a-entity>
+            <a-text value="Custom 22AR Marker Detected!" position="0 1.25 0" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+        </a-marker>
+
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
     <script>
         window.addEventListener('load', function() {
             // Hide loader with a fade effect when the scene is ready
@@ -233,27 +254,48 @@
             // Demo switching functionality
             const markerButton = document.getElementById('marker-demo');
             const patternButton = document.getElementById('pattern-demo');
+            const customButton = document.getElementById('custom-demo');
             const markerScene = document.getElementById('marker-scene');
             const patternScene = document.getElementById('pattern-scene');
+            const customScene = document.getElementById('custom-scene');
             const markerInstructions = document.getElementById('marker-instructions');
             const patternInstructions = document.getElementById('pattern-instructions');
+            const customInstructions = document.getElementById('custom-instructions');
 
             markerButton.addEventListener('click', function() {
                 markerButton.classList.add('active');
                 patternButton.classList.remove('active');
+                customButton.classList.remove('active');
                 markerScene.classList.remove('hidden');
                 patternScene.classList.add('hidden');
+                customScene.classList.add('hidden');
                 markerInstructions.classList.remove('hidden');
                 patternInstructions.classList.add('hidden');
+                customInstructions.classList.add('hidden');
             });
 
             patternButton.addEventListener('click', function() {
                 patternButton.classList.add('active');
                 markerButton.classList.remove('active');
+                customButton.classList.remove('active');
                 patternScene.classList.remove('hidden');
                 markerScene.classList.add('hidden');
+                customScene.classList.add('hidden');
                 patternInstructions.classList.remove('hidden');
                 markerInstructions.classList.add('hidden');
+                customInstructions.classList.add('hidden');
+            });
+            
+            customButton.addEventListener('click', function() {
+                customButton.classList.add('active');
+                markerButton.classList.remove('active');
+                patternButton.classList.remove('active');
+                customScene.classList.remove('hidden');
+                markerScene.classList.add('hidden');
+                patternScene.classList.add('hidden');
+                customInstructions.classList.remove('hidden');
+                markerInstructions.classList.add('hidden');
+                patternInstructions.classList.add('hidden');
             });
         });
     </script>
