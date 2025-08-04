@@ -1,98 +1,18 @@
-2<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2AR - AR.js</title>
-    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <style>
-        #debug-info {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 12px;
-            z-index: 9999;
-            max-width: 300px;
-        }
-    </style>
 </head>
 <body style='margin: 0px; overflow: hidden;'>
-    <!-- Debug info overlay -->
-    <div id="debug-info">
-        <div>AR.js Status: <span id="status">Loading...</span></div>
-        <div>Hiro Marker: <span id="hiro-status">Not detected</span></div>
-        <div>Custom Marker: <span id="custom-status">Not detected</span></div>
-        <div>Camera: <span id="camera-status">Checking...</span></div>
-    </div>
-
-    <!-- Basic AR Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true;" vr-mode-ui="enabled: false;">
-        <!-- Use default Hiro marker for testing -->
-        <a-marker preset="hiro" id="hiro-marker">
-            <a-box position="0 0.5 0" color="blue"></a-box>
-        </a-marker>
-        
-        <!-- Custom Marker with correct path to patterns directory -->
-        <a-marker type="pattern" url="patterns/pattern-22AR.patt" id="custom-marker">
+    <a-scene embedded arjs>
+        <a-marker preset="hiro">
             <a-box position="0 0.5 0" color="red"></a-box>
         </a-marker>
-
-        <!-- Camera -->
         <a-entity camera></a-entity>
     </a-scene>
-
-    <script>
-        // Visual debugging
-        function updateStatus(id, text, color = 'white') {
-            const element = document.getElementById(id);
-            if (element) {
-                element.textContent = text;
-                element.style.color = color;
-            }
-        }
-
-        window.addEventListener('load', function() {
-            updateStatus('status', 'Page loaded', 'yellow');
-            
-            const scene = document.querySelector('a-scene');
-            const hiroMarker = document.querySelector('#hiro-marker');
-            const customMarker = document.querySelector('#custom-marker');
-            
-            // Check if camera is working
-            setTimeout(() => {
-                const video = document.querySelector('video');
-                if (video && video.videoWidth > 0) {
-                    updateStatus('camera-status', 'Working', 'green');
-                } else {
-                    updateStatus('camera-status', 'Not working', 'red');
-                }
-            }, 3000);
-            
-            scene.addEventListener('loaded', function() {
-                updateStatus('status', 'AR.js loaded', 'green');
-            });
-            
-            hiroMarker.addEventListener('markerFound', function() {
-                updateStatus('hiro-status', 'DETECTED!', 'green');
-            });
-            
-            hiroMarker.addEventListener('markerLost', function() {
-                updateStatus('hiro-status', 'Lost', 'orange');
-            });
-            
-            customMarker.addEventListener('markerFound', function() {
-                updateStatus('custom-status', 'DETECTED!', 'green');
-            });
-            
-            customMarker.addEventListener('markerLost', function() {
-                updateStatus('custom-status', 'Lost', 'orange');
-            });
-        });
-    </script>
 </body>
 </html>
