@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>2AR - Augmented Reality Experience</title>
-    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
-    <script src="aframe/build/aframe-ar.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2AR - Custom Marker Demo</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
         body {
             margin: 0;
@@ -43,11 +43,40 @@
             to { filter: brightness(1.2); }
         }
         
-        .arjs-loader .subtitle {
-            font-size: 1.2em;
-            margin-bottom: 30px;
+        .arjs-loader .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .arjs-loader .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-top: 8px solid #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .arjs-loader .loading-text {
             color: white;
-            opacity: 0.9;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        
+        .arjs-loader .dots {
+            animation: dots 1s linear infinite;
+        }
+        
+        @keyframes dots {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
         }
         
         .ui-container {
@@ -63,61 +92,26 @@
             align-items: center;
         }
         
-        .demo-selector {
+        .header {
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 15px 20px;
+            padding: 15px;
             border-radius: 15px;
             margin-bottom: 15px;
             width: 90%;
             max-width: 400px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            transform: translateY(0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
-        .demo-selector:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        }
-        
-        .demo-selector h2 {
-            margin: 0 0 15px 0;
+        .header h1 {
+            margin: 0;
             text-align: center;
             font-size: 1.5em;
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-        
-        .demo-buttons {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
-        
-        .demo-button {
-            background: linear-gradient(45deg, #4285f4, #34a853);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.3s ease, filter 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .demo-button:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
-        
-        .demo-button.active {
-            background: linear-gradient(45deg, #34a853, #4ecdc4);
-            box-shadow: 0 4px 12px rgba(52, 168, 83, 0.4);
         }
         
         .instructions {
@@ -150,74 +144,28 @@
             color: #ff6b6b;
             text-decoration: underline;
         }
-        
-        .hidden {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
     <!-- AR.js loader -->
     <div class="arjs-loader">
-        <div class="title">2AR</div>
-        <div class="subtitle">Augmented Reality Experience</div>
-        <div>Loading AR Experience...</div>
-        <div style="margin-top: 10px;">Please allow camera access</div>
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Loading AR Experience<span class="dots">...</span></div>
+        </div>
     </div>
 
-    <!-- UI Controls -->
     <div class="ui-container">
-        <div class="demo-selector">
-            <h2>2AR Experience</h2>
-            <div class="demo-buttons">
-                <button class="demo-button active" id="marker-demo">Hiro Marker</button>
-                <button class="demo-button" id="pattern-demo">Kanji Pattern</button>
-                <button class="demo-button" id="custom-demo">Custom Marker</button>
-            </div>
+        <div class="header">
+            <h1 class="glow-text">2AR Custom Marker Demo</h1>
         </div>
-        <div class="instructions" id="marker-instructions">
-            Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank">Hiro Marker</a> to see a 3D duck model
-        </div>
-        <div class="instructions hidden" id="pattern-instructions">
-            Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/pattern-kanji.png" target="_blank">Kanji Pattern</a> to see animated 3D objects
-        </div>
-        <div class="instructions hidden" id="custom-instructions">
+        <div class="instructions">
             Point your camera at your custom 22AR marker to see a special 3D model
         </div>
     </div>
 
-    <!-- AR Scene for Marker Demo -->
-    <a-scene id="marker-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; motionUI: false;">
-        <!-- Hiro Marker with 3D Object -->
-        <a-marker preset="hiro">
-            <a-entity
-                position="0 0.5 0"
-                scale="0.5 0.5 0.5"
-                gltf-model="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf">
-            </a-entity>
-            <a-text value="Hiro Marker Detected!" position="0 1.25 0" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
-        </a-marker>
-
-        <!-- Camera -->
-        <a-entity camera></a-entity>
-    </a-scene>
-
-    <!-- AR Scene for Pattern Demo -->
-    <a-scene id="pattern-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; motionUI: false;" class="hidden">
-        <!-- Custom Pattern Marker with Different 3D Object -->
-        <a-marker type="pattern" url="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/patt.kanji">
-            <a-box position="0 0.5 0" material="color: red; opacity: 0.7;" animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear;">
-                <a-torus-knot position="0 0 0" radius="0.25" radius-tubular="0.05" material="color: blue;"></a-torus-knot>
-            </a-box>
-            <a-text value="Kanji Pattern Detected!" position="0 1.25 0" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
-        </a-marker>
-
-        <!-- Camera -->
-        <a-entity camera></a-entity>
-    </a-scene>
-
     <!-- AR Scene for Custom Pattern Demo -->
-    <a-scene id="custom-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; motionUI: false;" class="hidden">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; motionUI: false;">
         <!-- Custom Pattern Marker with 3D Object -->
         <a-marker type="pattern" url="patterns/pattern-22AR.patt">
             <a-entity
@@ -236,66 +184,17 @@
     <script>
         window.addEventListener('load', function() {
             // Hide loader with a fade effect when the scene is ready
-            const scenes = document.querySelectorAll('a-scene');
-            scenes.forEach(scene => {
-                scene.addEventListener('loaded', function() {
-                    const loader = document.querySelector('.arjs-loader');
-                    loader.style.opacity = '1';
-                    loader.style.transition = 'opacity 0.8s ease';
+            const scene = document.querySelector('a-scene');
+            scene.addEventListener('loaded', function() {
+                const loader = document.querySelector('.arjs-loader');
+                loader.style.opacity = '1';
+                loader.style.transition = 'opacity 0.8s ease';
+                setTimeout(() => {
+                    loader.style.opacity = '0';
                     setTimeout(() => {
-                        loader.style.opacity = '0';
-                        setTimeout(() => {
-                            loader.style.display = 'none';
-                        }, 800);
-                    }, 500);
-                });
-            });
-
-            // Demo switching functionality
-            const markerButton = document.getElementById('marker-demo');
-            const patternButton = document.getElementById('pattern-demo');
-            const customButton = document.getElementById('custom-demo');
-            const markerScene = document.getElementById('marker-scene');
-            const patternScene = document.getElementById('pattern-scene');
-            const customScene = document.getElementById('custom-scene');
-            const markerInstructions = document.getElementById('marker-instructions');
-            const patternInstructions = document.getElementById('pattern-instructions');
-            const customInstructions = document.getElementById('custom-instructions');
-
-            markerButton.addEventListener('click', function() {
-                markerButton.classList.add('active');
-                patternButton.classList.remove('active');
-                customButton.classList.remove('active');
-                markerScene.classList.remove('hidden');
-                patternScene.classList.add('hidden');
-                customScene.classList.add('hidden');
-                markerInstructions.classList.remove('hidden');
-                patternInstructions.classList.add('hidden');
-                customInstructions.classList.add('hidden');
-            });
-
-            patternButton.addEventListener('click', function() {
-                patternButton.classList.add('active');
-                markerButton.classList.remove('active');
-                customButton.classList.remove('active');
-                patternScene.classList.remove('hidden');
-                markerScene.classList.add('hidden');
-                customScene.classList.add('hidden');
-                patternInstructions.classList.remove('hidden');
-                markerInstructions.classList.add('hidden');
-                customInstructions.classList.add('hidden');
-            });
-            
-            customButton.addEventListener('click', function() {
-                customButton.classList.add('active');
-                markerButton.classList.remove('active');
-                patternButton.classList.remove('active');
-                customScene.classList.remove('hidden');
-                markerScene.classList.add('hidden');
-                patternScene.classList.add('hidden');
-                customInstructions.classList.remove('hidden');
-                markerInstructions.classList.add('hidden');
-                patternInstructions.classList.add('hidden');
+                        loader.style.display = 'none';
+                    }, 800);
+                }, 500);
             });
         });
     </script>
