@@ -6,6 +6,18 @@
     <title>2AR - AR.js</title>
     <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
     <script src="aframe/build/aframe-ar.js"></script>
+    <script>
+        // Ensure loader is hidden after a set time
+        window.onload = function() {
+            setTimeout(function() {
+                var loader = document.querySelector('.arjs-loader');
+                if (loader) {
+                    loader.style.display = 'none';
+                    console.log('Loader hidden by timeout');
+                }
+            }, 5000);
+        };
+    </script>
     <style>
         body {
             margin: 0;
@@ -41,9 +53,9 @@
     </div>
 
     <!-- Basic AR Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
-        <!-- Custom Marker with absolute path -->
-        <a-marker type="pattern" url="/pattern-22AR.patt">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+        <!-- Custom Marker with relative path -->
+        <a-marker type="pattern" url="pattern-22AR.patt">
             <a-box position="0 0.5 0" color="red"></a-box>
         </a-marker>
 
@@ -52,21 +64,7 @@
     </a-scene>
 
     <script>
-        window.addEventListener('load', function() {
-            // Hide loader when the scene is ready
-            const scene = document.querySelector('a-scene');
-            scene.addEventListener('loaded', function() {
-                document.querySelector('.arjs-loader').style.display = 'none';
-            });
-
-            // Also hide loader after a timeout as fallback
-            setTimeout(function() {
-                document.querySelector('.arjs-loader').style.display = 'none';
-            }, 3000);
-
-            // Debug logging
-            console.log('AR.js scene loaded event listener added');
-        });
+        // This script is intentionally left empty as we're handling the loader in the head
     </script>
 </body>
 </html>
