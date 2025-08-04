@@ -5,70 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2AR - AR.js</title>
     <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
-    <script src="aframe/build/aframe-ar.js"></script>
-    <script>
-        // Force hide loader after a very short time
-        window.onload = function() {
-            // Hide immediately when page loads
-            setTimeout(function() {
-                var loader = document.querySelector('.arjs-loader');
-                if (loader) {
-                    loader.style.display = 'none';
-                    console.log('Loader hidden immediately');
-                }
-            }, 1000);
-
-            // Backup timeout - hide again after 2 seconds
-            setTimeout(function() {
-                var loader = document.querySelector('.arjs-loader');
-                if (loader) {
-                    loader.style.display = 'none';
-                    console.log('Loader hidden by backup timeout');
-                }
-            }, 2000);
-        };
-    </script>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-        .arjs-loader {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .arjs-loader div {
-            text-align: center;
-            font-size: 1.25em;
-            color: white;
-        }
-    </style>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
-<body>
-    <!-- AR.js loader -->
-    <div class="arjs-loader">
-        <div>
-            <div>Loading AR Experience...</div>
-            <div>Please allow camera access</div>
-        </div>
-    </div>
-
+<body style='margin: 0px; overflow: hidden;'>
     <!-- Basic AR Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true;">
+    <a-scene embedded arjs="sourceType: webcam;">
         <!-- Use default Hiro marker for testing -->
         <a-marker preset="hiro">
             <a-box position="0 0.5 0" color="blue"></a-box>
         </a-marker>
-
+        
         <!-- Custom Marker with correct path to patterns directory -->
         <a-marker type="pattern" url="patterns/pattern-22AR.patt">
             <a-box position="0 0.5 0" color="red"></a-box>
@@ -77,9 +23,5 @@
         <!-- Camera -->
         <a-entity camera></a-entity>
     </a-scene>
-
-    <script>
-        // This script is intentionally left empty as we're handling the loader in the head
-    </script>
 </body>
 </html>
