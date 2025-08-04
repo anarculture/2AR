@@ -183,7 +183,7 @@
     </div>
 
     <!-- AR Scene for Marker Demo -->
-    <a-scene id="marker-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+    <a-scene id="marker-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; motionUI: false;">
         <!-- Hiro Marker with 3D Object -->
         <a-marker preset="hiro">
             <a-entity
@@ -199,7 +199,7 @@
     </a-scene>
 
     <!-- AR Scene for Pattern Demo -->
-    <a-scene id="pattern-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false;" class="hidden">
+    <a-scene id="pattern-scene" embedded arjs="sourceType: webcam; debugUIEnabled: false; motionUI: false;" class="hidden">
         <!-- Custom Pattern Marker with Different 3D Object -->
         <a-marker type="pattern" url="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/patt.kanji">
             <a-box position="0 0.5 0" material="color: red; opacity: 0.7;" animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear;">
