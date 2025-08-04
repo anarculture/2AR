@@ -3,113 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>2AR - AR.js Demo</title>
+    <title>2AR - Augmented Reality Experience</title>
     <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
     <script src="aframe/build/aframe-ar.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+        
         .arjs-loader {
             height: 100%;
             width: 100%;
             position: absolute;
             top: 0;
             left: 0;
-            background-color: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.8);
             z-index: 9999;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
-        .arjs-loader div {
-            text-align: center;
-            font-size: 1.25em;
-            color: white;
+        
+        .arjs-loader .title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
         }
+        
+        @keyframes glow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2); }
+        }
+        
+        .arjs-loader .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: white;
+            opacity: 0.9;
+        }
+        
         .ui-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 10px;
+            padding: 15px;
             box-sizing: border-box;
             z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+        
         .demo-selector {
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
             width: 90%;
             max-width: 400px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        
+        .demo-selector:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        
         .demo-selector h2 {
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1.5em;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+        
         .demo-buttons {
             display: flex;
             justify-content: space-around;
             width: 100%;
         }
+        
         .demo-button {
-            background-color: #4285f4;
+            background: linear-gradient(45deg, #4285f4, #34a853);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
+            padding: 12px 20px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        
+        .demo-button:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        
         .demo-button.active {
-            background-color: #34a853;
+            background: linear-gradient(45deg, #34a853, #4ecdc4);
+            box-shadow: 0 4px 12px rgba(52, 168, 83, 0.4);
         }
+        
         .instructions {
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
             color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 15px;
             width: 90%;
             max-width: 400px;
             text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite alternate;
         }
+        
+        @keyframes pulse {
+            from { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
+            to { box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4); }
+        }
+        
+        .instructions a {
+            color: #4ecdc4;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        .instructions a:hover {
+            color: #ff6b6b;
+            text-decoration: underline;
+        }
+        
         .hidden {
-            display: none;
+            display: none !important;
         }
     </style>
 </head>
 <body>
     <!-- AR.js loader -->
     <div class="arjs-loader">
-        <div>
-            <div>Loading AR Experience...</div>
-            <div>Please allow camera access</div>
-        </div>
+        <div class="title">2AR</div>
+        <div class="subtitle">Augmented Reality Experience</div>
+        <div>Loading AR Experience...</div>
+        <div style="margin-top: 10px;">Please allow camera access</div>
     </div>
 
     <!-- UI Controls -->
     <div class="ui-container">
         <div class="demo-selector">
-            <h2>2AR Demo</h2>
+            <h2>2AR Experience</h2>
             <div class="demo-buttons">
-                <button class="demo-button active" id="marker-demo">Marker Demo</button>
-                <button class="demo-button" id="pattern-demo">Pattern Demo</button>
+                <button class="demo-button active" id="marker-demo">Hiro Marker</button>
+                <button class="demo-button" id="pattern-demo">Kanji Pattern</button>
             </div>
         </div>
         <div class="instructions" id="marker-instructions">
-            Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" style="color: #4285f4;">Hiro Marker</a>
+            📱 Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank">Hiro Marker</a> to see a 3D duck model
         </div>
         <div class="instructions hidden" id="pattern-instructions">
-            Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/pattern-kanji.png" target="_blank" style="color: #4285f4;">Kanji Pattern</a>
+            📱 Point your camera at a <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/pattern-kanji.png" target="_blank">Kanji Pattern</a> to see animated 3D objects
         </div>
     </div>
 
@@ -145,11 +214,19 @@
 
     <script>
         window.addEventListener('load', function() {
-            // Hide loader when the scene is ready
+            // Hide loader with a fade effect when the scene is ready
             const scenes = document.querySelectorAll('a-scene');
             scenes.forEach(scene => {
                 scene.addEventListener('loaded', function() {
-                    document.querySelector('.arjs-loader').style.display = 'none';
+                    const loader = document.querySelector('.arjs-loader');
+                    loader.style.opacity = '1';
+                    loader.style.transition = 'opacity 0.8s ease';
+                    setTimeout(() => {
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                        }, 800);
+                    }, 500);
                 });
             });
 
